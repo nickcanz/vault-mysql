@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  vault-server:
+    image: vault:latest
+    container_name: vault-server
+    environment:
+        - VAULT_ADDR=http://127.0.0.1:8200
+        - VAULT_DEV_ROOT_TOKEN_ID=vault
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 8200:8200
+    networks:
+      - vault-mysql
+  mysql-server-blue:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql-server-blue
+    environment:
+       MYSQL_ROOT_PASSWORD: mysql-blue
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - vault-mysql
+    ports:
+      - 43306:3306
+  mysql-server-green:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql-server-green
+    environment:
+       MYSQL_ROOT_PASSWORD: mysql-green
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - vault-mysql
+    ports:
+      - 53306:3306
+
+networks:
+  vault-mysql:
+
